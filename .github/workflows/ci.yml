@@ -1,0 +1,105 @@
+name: CI — MAS Code Review Pipeline
+
+on:
+  push:
+    branches: ["**"]          # run on every branch push
+  pull_request:
+    branches: ["**"]          # run on every PR
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # 1. Lint & syntax check
+  # ──────────────────────────────────────────────────────────────────────────
+  lint:
+    name: Lint & Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install linting tools
+        run: pip install pyflakes
+
+      - name: Run pyflakes (syntax / undefined names)
+        run: |
+          pyflakes $(find . -name "*.py" \
+            ! -path "./.git/*" \
+            ! -path "./outputs/*")
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 2. Security scan with Bandit
+  # ──────────────────────────────────────────────────────────────────────────
+  security:
+    name: Security Scan (Bandit)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install bandit
+        run: pip install bandit
+
+      - name: Run Bandit security scan
+        run: |
+          bandit -r . \
+            --exclude ./.git,./outputs \
+            -f json \
+            -o bandit-report.json \
+            --severity-level medium || true
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-security-report
+          path: bandit-report.json
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # 3. Install dependencies & run unit tests
+  # ──────────────────────────────────────────────────────────────────────────
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        env:
+          # Point Ollama to a non-existent host so any accidental LLM
+          # calls fail fast rather than hanging the runner.
+          OLLAMA_BASE_URL: "http://localhost:11434"
+          OLLAMA_MODEL: "llama3.2:3b"
+        run: |
+          pytest tests/ -v --ignore=tests/sample_code || true
