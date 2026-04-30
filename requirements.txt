@@ -1,0 +1,15 @@
+# ── Core agent framework ──────────────────────────────────────────────────
+langgraph>=0.2.0
+langchain>=0.2.0
+langchain-core>=0.2.0
+langchain-ollama>=0.1.0
+langchain-community>=0.2.0
+
+# ── Security scanning ─────────────────────────────────────────────────────
+bandit>=1.7.9
+
+# ── Report generation ─────────────────────────────────────────────────────
+# (pure stdlib Markdown — no extra deps needed)
+
+# ── Utilities ──────────────────────────────────────────────────────────────
+python-dateutil>=2.9.0

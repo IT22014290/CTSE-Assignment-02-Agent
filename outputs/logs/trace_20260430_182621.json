@@ -1,0 +1,105 @@
+{
+  "run_id": "20260430_182621",
+  "total_entries": 11,
+  "entries": [
+    {
+      "timestamp": "2026-04-30T18:26:21.906564+00:00",
+      "agent": "CoordinatorAgent",
+      "tool_called": "file_reader_tool",
+      "input_summary": "Scanning /Users/sami/Documents/Y4S2/CTSE/Assign 2 - CTSE/mas-code-review/tests/sample_code",
+      "output_summary": "Read 3 file(s)",
+      "model": "llama3.2:3b",
+      "duration_ms": 1.36
+    },
+    {
+      "timestamp": "2026-04-30T18:26:24.797521+00:00",
+      "agent": "CoordinatorAgent",
+      "tool_called": null,
+      "input_summary": "LLM status update for 3 file(s)",
+      "output_summary": "The target directory '/Users/sami/Documents/Y4S2/CTSE/Assign 2 - CTSE/mas-code-review/tests/sample_code' has been succes",
+      "model": "llama3.2:3b",
+      "duration_ms": 2890.87
+    },
+    {
+      "timestamp": "2026-04-30T18:26:36.229721+00:00",
+      "agent": "CodeAnalysisAgent",
+      "tool_called": null,
+      "input_summary": "Analysing bad_quality_code.py",
+      "output_summary": "Score 2/10, 8 issues",
+      "model": "llama3.2:3b",
+      "duration_ms": 11419.64
+    },
+    {
+      "timestamp": "2026-04-30T18:26:46.770431+00:00",
+      "agent": "CodeAnalysisAgent",
+      "tool_called": null,
+      "input_summary": "Analysing mixed_issues.py",
+      "output_summary": "Score 4/10, 9 issues",
+      "model": "llama3.2:3b",
+      "duration_ms": 10540.64
+    },
+    {
+      "timestamp": "2026-04-30T18:26:53.891845+00:00",
+      "agent": "CodeAnalysisAgent",
+      "tool_called": null,
+      "input_summary": "Analysing vulnerable_app.py",
+      "output_summary": "Score 2/10, 5 issues",
+      "model": "llama3.2:3b",
+      "duration_ms": 7121.34
+    },
+    {
+      "timestamp": "2026-04-30T18:26:54.177995+00:00",
+      "agent": "SecurityAgent",
+      "tool_called": "security_scanner_tool",
+      "input_summary": "Scanning 3 file(s)",
+      "output_summary": "Found 16 issue(s) across all files",
+      "model": "llama3.2:3b",
+      "duration_ms": 283.21
+    },
+    {
+      "timestamp": "2026-04-30T18:26:54.182937+00:00",
+      "agent": "SecurityAgent",
+      "tool_called": null,
+      "input_summary": "LLM interpreting bad_quality_code.py",
+      "output_summary": "✅ No security issues were detected in this file.",
+      "model": "llama3.2:3b",
+      "duration_ms": 0.01
+    },
+    {
+      "timestamp": "2026-04-30T18:27:05.442712+00:00",
+      "agent": "SecurityAgent",
+      "tool_called": null,
+      "input_summary": "LLM interpreting mixed_issues.py",
+      "output_summary": "Based on the provided scanner findings for `mixed_issues.py`, here's my analysis:\n\n1. **B324: Use of",
+      "model": "llama3.2:3b",
+      "duration_ms": 11259.77
+    },
+    {
+      "timestamp": "2026-04-30T18:27:23.243176+00:00",
+      "agent": "SecurityAgent",
+      "tool_called": null,
+      "input_summary": "LLM interpreting vulnerable_app.py",
+      "output_summary": "**Security Interpretation**\n\nThe provided Python file, `vulnerable_app.py`, contains several securit",
+      "model": "llama3.2:3b",
+      "duration_ms": 17800.42
+    },
+    {
+      "timestamp": "2026-04-30T18:27:27.693498+00:00",
+      "agent": "ReportAgent",
+      "tool_called": null,
+      "input_summary": "Generating executive summary",
+      "output_summary": "Here is a clear 3-5 sentence executive summary:\n\nThe codebase currently has a moderate level of quality issues, with an ",
+      "model": "llama3.2:3b",
+      "duration_ms": 4447.1
+    },
+    {
+      "timestamp": "2026-04-30T18:27:27.696920+00:00",
+      "agent": "ReportAgent",
+      "tool_called": "report_generator_tool",
+      "input_summary": "Assembling Markdown report",
+      "output_summary": "Report saved to /Users/sami/Documents/Y4S2/CTSE/Assign 2 - CTSE/mas-code-review/outputs/reports/report_20260430_182727.md",
+      "model": "llama3.2:3b",
+      "duration_ms": 3.31
+    }
+  ]
+}
