@@ -21,6 +21,7 @@ import config  # noqa: F401
 from state import initial_state
 from logger.trace_logger import TraceLogger
 from graph.workflow import build_graph
+from graph.workflow_parallel import build_graph_parallel
 
 
 BANNER = r"""
@@ -46,6 +47,11 @@ def parse_args() -> argparse.Namespace:
         "--model", "-m",
         default=None,
         help="Ollama model to use (overrides config.py). e.g. phi3, mistral",
+    )
+    parser.add_argument(
+        "--parallel", "-p",
+        action="store_true",
+        help="Run code analysis and security audit in PARALLEL (faster execution).",
     )
     return parser.parse_args()
 
@@ -77,7 +83,12 @@ def main() -> int:
     logger = TraceLogger()
 
     # ── Build and run the LangGraph pipeline ─────────────────────────────
-    pipeline = build_graph(logger)
+        if args.parallel:
+            print("⚡ PARALLEL MODE: Code Analysis & Security Audit will run concurrently\n")
+            pipeline = build_graph_parallel(logger)
+        else:
+            print("🔄 SEQUENTIAL MODE: Agents run one after another\n")
+            pipeline = build_graph(logger)
 
     print("🚀 Starting pipeline...\n")
     try:
