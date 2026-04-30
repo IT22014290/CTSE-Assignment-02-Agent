@@ -17,8 +17,6 @@ vs Sequential (original):
 """
 
 from __future__ import annotations
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
 
 from langgraph.graph import StateGraph, START, END
 

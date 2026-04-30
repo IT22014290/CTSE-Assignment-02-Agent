@@ -83,12 +83,12 @@ def main() -> int:
     logger = TraceLogger()
 
     # ── Build and run the LangGraph pipeline ─────────────────────────────
-        if args.parallel:
-            print("⚡ PARALLEL MODE: Code Analysis & Security Audit will run concurrently\n")
-            pipeline = build_graph_parallel(logger)
-        else:
-            print("🔄 SEQUENTIAL MODE: Agents run one after another\n")
-            pipeline = build_graph(logger)
+    if args.parallel:
+        print("⚡ PARALLEL MODE: Code Analysis & Security Audit will run concurrently\n")
+        pipeline = build_graph_parallel(logger)
+    else:
+        print("🔄 SEQUENTIAL MODE: Agents run one after another\n")
+        pipeline = build_graph(logger)
 
     print("🚀 Starting pipeline...\n")
     try:

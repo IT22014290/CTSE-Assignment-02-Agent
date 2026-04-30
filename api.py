@@ -13,15 +13,13 @@ Provides REST endpoints for:
 from __future__ import annotations
 
 import os
-import json
-import asyncio
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
 from concurrent.futures import ThreadPoolExecutor
 
-from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
