@@ -14,7 +14,6 @@ as required by the assignment rubric.
 from __future__ import annotations
 
 import os
-from typing import Optional
 
 from langchain_core.tools import tool
 

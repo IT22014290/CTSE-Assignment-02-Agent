@@ -132,7 +132,7 @@ def test_trace_logging() -> None:
 
         state  = initial_state(tmpdir)
         logger = TraceLogger()
-        result = run_coordinator(state, logger)
+        run_coordinator(state, logger)
 
         logs = logger.get_entries()
         _assert(len(logs) >= 1,                    "at least 1 log entry")

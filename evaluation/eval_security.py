@@ -204,7 +204,7 @@ REASON: <one sentence>
                     pass
 
         print(f"    LLM Judge response:\n    {response.strip()}")
-        _assert(score >= 6, f"LLM judge score ≥ 6/10", f"got {score}/10")
+        _assert(score >= 6, "LLM judge score ≥ 6/10", f"got {score}/10")
 
     except Exception as exc:
         _skip("LLM judge", f"Ollama unavailable: {exc}")

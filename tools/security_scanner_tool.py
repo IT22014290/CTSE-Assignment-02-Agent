@@ -13,13 +13,11 @@ as required by the assignment rubric.
 
 from __future__ import annotations
 
-import ast
 import json
 import os
 import subprocess
 import sys
 import tempfile
-from typing import Optional
 
 from langchain_core.tools import tool
 

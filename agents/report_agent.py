@@ -111,11 +111,10 @@ def run_report_generator(state: SharedState, logger: TraceLogger) -> SharedState
     agent_name        = "ReportAgent"
     analysis_results  = state.get("analysis_results", {})
     security_results  = state.get("security_results", {})
-    agent_logs        = state.get("agent_logs", [])
 
-    print(f"\n{'='*60}")
-    print(f"🤖 REPORT AGENT — generating final report")
-    print(f"{'='*60}")
+    print("\n" + "="*60)
+    print("🤖 REPORT AGENT — generating final report")
+    print("="*60)
 
     # ── Stage 1: LLM executive summary ───────────────────────────────────
     t_llm = logger.start_timer()

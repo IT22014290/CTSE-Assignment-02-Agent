@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import os
 from datetime import datetime, timezone
-from typing import Optional
 
 from langchain_core.tools import tool
 
