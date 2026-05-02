@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
 
-from state import initial_state, SharedState
+from state import initial_state
 from logger.trace_logger import TraceLogger
 from tools.file_reader_tool import file_reader_tool
 from tools.security_scanner_tool import security_scanner_tool
@@ -231,7 +231,7 @@ def test_trace_logger_records_entries() -> None:
     assert entries[0]["tool_called"] == "toolY"
 
 
-def test_trace_logger_saves_json(tmp_path: "pytest.TempPathFactory") -> None:
+def test_trace_logger_saves_json(tmp_path) -> None:
     logger = TraceLogger()
     t = logger.start_timer()
     logger.log("TestAgent", None, "in", "out", logger.stop_timer(t))
