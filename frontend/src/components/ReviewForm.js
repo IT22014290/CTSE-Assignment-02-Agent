@@ -76,7 +76,7 @@ export default function ReviewForm({ onSubmit, loading }) {
             <button
               type="button"
               className="btn btn-secondary"
-              onClick={() => setInputPath('tests/sample_code')}
+              onClick={() => setInputPath('/Users/sami/Documents/ctse-assignment-02/CTSE-Assignment-02-Agent/tests/sample_code')}
               disabled={loading}
             >
               📋 Use Sample

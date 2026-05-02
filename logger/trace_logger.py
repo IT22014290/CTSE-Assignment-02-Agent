@@ -37,9 +37,9 @@ class TraceLogger:
     >>> logger.save()
     """
 
-    def __init__(self) -> None:
+    def __init__(self, run_id: Optional[str] = None) -> None:
         self._entries: list[dict] = []
-        self._run_id: str = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        self._run_id: str = run_id or datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
     # ── Timer helpers ──────────────────────────────────────────────────────
     def start_timer(self) -> float:

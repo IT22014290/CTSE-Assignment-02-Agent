@@ -134,17 +134,16 @@ def run_pipeline_sync(input_path: str, run_id: str, model: Optional[str] = None)
         # Override model if provided
         os.environ["OLLAMA_MODEL"] = model or OLLAMA_MODEL
 
-        # Build and execute graph
-        graph = build_graph(logger)
-        compiled_graph = graph.compile()
+        # Build and execute graph (build_graph already returns compiled graph)
+        pipeline = build_graph(logger)
 
         state = initial_state(input_path)
-        result = compiled_graph.invoke(state)
+        result = pipeline.invoke(state)
 
-        # Extract results
+        # Save trace log and extract results
+        trace_log_path = logger.save()
         files_analyzed = len(result.get("code_files", {}))
         report_path = result.get("report_path")
-        trace_log_path = logger.log_file
 
         # Get report summary (first 500 chars)
         summary = None
