@@ -68,6 +68,7 @@ class PipelineStatus(BaseModel):
     run_id: str
     status: str  # "pending", "running", "completed", "error"
     progress: float  # 0.0 to 1.0
+    current_agent: Optional[str] = None  # which agent just completed
     started_at: Optional[str] = None
     completed_at: Optional[str] = None
     error: Optional[str] = None
@@ -137,8 +138,23 @@ def run_pipeline_sync(input_path: str, run_id: str, model: Optional[str] = None)
         # Build and execute graph (build_graph already returns compiled graph)
         pipeline = build_graph(logger)
 
+        # Agent order → progress milestones
+        _progress_map = {
+            "coordinator":       0.25,
+            "code_analysis":     0.50,
+            "security_audit":    0.75,
+            "report_generator":  1.00,
+        }
+
+        # Stream node-by-node so we can update per-agent progress live
         state = initial_state(input_path)
-        result = pipeline.invoke(state)
+        result = None
+        for event in pipeline.stream(state):
+            node_name = next(iter(event))          # e.g. "coordinator"
+            node_state = event[node_name]
+            pipeline_runs[run_id]["current_agent"] = node_name
+            pipeline_runs[run_id]["progress"] = _progress_map.get(node_name, 0.0)
+            result = node_state                    # keep last state as result
 
         # Save trace log and extract results
         trace_log_path = logger.save()
@@ -227,6 +243,7 @@ async def start_review(request: ReviewRequest, background_tasks: BackgroundTasks
     pipeline_runs[run_id] = {
         "status": "pending",
         "progress": 0.0,
+        "current_agent": None,
         "started_at": None,
         "completed_at": None,
         "error": None,
@@ -253,6 +270,7 @@ async def get_pipeline_status(run_id: str):
         run_id=run_id,
         status=run_info["status"],
         progress=run_info.get("progress", 0.0),
+        current_agent=run_info.get("current_agent"),
         started_at=run_info.get("started_at"),
         completed_at=run_info.get("completed_at"),
         error=run_info.get("error"),

@@ -147,21 +147,43 @@
   font-weight: 500;
 }
 
-.timeline-content p.status.completed {
-  color: #10b981;
+/* ── Overall status badge colours ── */
+.badge-completed { border-color: #10b981; color: #10b981; }
+.badge-running   { border-color: #38bdf8; color: #38bdf8; }
+.badge-error     { border-color: #ef4444; color: #ef4444; }
+.badge-pending   { border-color: #f59e0b; color: #f59e0b; }
+
+/* ── Per-agent row colours ── */
+.item-completed .timeline-marker {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
 }
 
-.timeline-content p.status.running {
-  color: #38bdf8;
-  animation: pulse 1.5s ease-in-out infinite;
+.item-running .timeline-marker {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  animation: pulse-border 1.5s ease-in-out infinite;
 }
 
-.timeline-content p.status.pending {
-  color: #f59e0b;
+.item-pending .timeline-marker {
+  border-color: rgba(148, 163, 184, 0.3);
+  background: rgba(30, 41, 59, 0.3);
 }
 
-.timeline-content p.status.error {
-  color: #ef4444;
+.item-error .timeline-marker {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* ── Per-agent status text ── */
+.agent-status.status-completed { color: #10b981; font-weight: 600; }
+.agent-status.status-running   { color: #38bdf8; animation: pulse 1.5s ease-in-out infinite; }
+.agent-status.status-pending   { color: #64748b; }
+.agent-status.status-error     { color: #ef4444; }
+
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); }
 }
 
 @keyframes pulse {
