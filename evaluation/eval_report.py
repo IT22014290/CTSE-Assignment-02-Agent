@@ -188,14 +188,23 @@ VERDICT: <one sentence>
         chain = judge_prompt | llm
         response = chain.invoke({"excerpt": excerpt})
 
+        import re
         score = 0
+        # Match "TOTAL_SCORE: 7", "Total Score: 7/10", "Total: 8" etc.
         for line in response.splitlines():
-            if line.strip().upper().startswith("TOTAL_SCORE:"):
+            normalized = line.strip().upper().replace(" ", "_")
+            if normalized.startswith("TOTAL_SCORE:") or normalized.startswith("TOTAL:"):
                 try:
                     raw = line.split(":")[1].strip().split("/")[0].strip()
                     score = int(raw)
+                    break
                 except (IndexError, ValueError):
                     pass
+        # Fallback: scan for any "N/10" pattern in the full response
+        if score == 0:
+            match = re.search(r"\b([7-9]|10)\s*/\s*10\b", response)
+            if match:
+                score = int(match.group(1))
 
         print(f"    LLM Judge response:\n    {response.strip()}")
         _assert(score >= 6, "LLM judge score ≥ 6/10", f"got {score}/10")

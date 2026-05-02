@@ -43,18 +43,17 @@ def _route_after_coordinator(state: SharedState) -> list[str]:
     return ["code_analysis", "security_audit"]
 
 
-def _merge_analysis_results(state: SharedState) -> SharedState:
+def _merge_analysis_results(state: SharedState, logger: TraceLogger) -> dict:
     """
-    Merge results from both analysis agents (called after both complete).
-    
-    This is a no-op in terms of state transformation but ensures
-    both analyses are complete before moving to report generation.
+    Collect agent logs after both parallel analyses complete.
+
+    Returns only the keys that changed at the merge point — all other
+    state keys written by the coordinator remain untouched.
     """
-    # Both analyses have already updated the state
-    # Just ensure status is still good
-    if state.get("status") != "error":
-        state["status"] = "ready_for_report"
-    return state
+    return {
+        "agent_logs": logger.get_entries(),
+        "status": "reporting",
+    }
 
 
 def build_graph_parallel(logger: TraceLogger) -> StateGraph:
@@ -62,6 +61,8 @@ def build_graph_parallel(logger: TraceLogger) -> StateGraph:
     Construct and compile the LangGraph StateGraph with PARALLEL execution.
 
     Code Analysis and Security Audit run in PARALLEL after Coordinator.
+    Each parallel node returns only the keys it owns to avoid LangGraph
+    concurrent-write conflicts.
 
     Parameters
     ----------
@@ -75,22 +76,25 @@ def build_graph_parallel(logger: TraceLogger) -> StateGraph:
     """
     graph = StateGraph(SharedState)
 
+    # ── Thin wrappers — return only the keys each node owns ───────────────
+    def _code_analysis_node(state: SharedState) -> dict:
+        result = run_code_analysis(state, logger)
+        return {"analysis_results": result["analysis_results"]}
+
+    def _security_audit_node(state: SharedState) -> dict:
+        result = run_security_audit(state, logger)
+        return {"security_results": result["security_results"]}
+
     # ── Register agent nodes ──────────────────────────────────────────────
     graph.add_node(
         "coordinator",
         lambda state: run_coordinator(state, logger),
     )
-    graph.add_node(
-        "code_analysis",
-        lambda state: run_code_analysis(state, logger),
-    )
-    graph.add_node(
-        "security_audit",
-        lambda state: run_security_audit(state, logger),
-    )
+    graph.add_node("code_analysis",  _code_analysis_node)
+    graph.add_node("security_audit", _security_audit_node)
     graph.add_node(
         "merge_results",
-        lambda state: _merge_analysis_results(state),
+        lambda state: _merge_analysis_results(state, logger),
     )
     graph.add_node(
         "report_generator",

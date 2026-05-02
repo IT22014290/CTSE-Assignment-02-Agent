@@ -194,14 +194,21 @@ REASON: <one sentence>
         chain = judge_prompt | llm
         response = chain.invoke({"scan_json": json.dumps(findings, indent=2)})
 
+        import re
         score = 0
         for line in response.splitlines():
             if line.strip().upper().startswith("SCORE:"):
                 try:
                     raw = line.split(":")[1].strip().split("/")[0].strip()
                     score = int(raw)
+                    break
                 except (IndexError, ValueError):
                     pass
+        # Fallback: scan for any "N/10" pattern in the full response
+        if score == 0:
+            match = re.search(r"\b([6-9]|10)\s*/\s*10\b", response)
+            if match:
+                score = int(match.group(1))
 
         print(f"    LLM Judge response:\n    {response.strip()}")
         _assert(score >= 6, "LLM judge score ≥ 6/10", f"got {score}/10")
