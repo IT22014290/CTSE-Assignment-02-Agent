@@ -16,6 +16,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from config import OLLAMA_MODEL
 from tools.report_generator_tool import report_generator_tool
 
 # ── ANSI colours ──────────────────────────────────────────────────────────
@@ -68,7 +69,7 @@ _SAMPLE_SECURITY = {
 _SAMPLE_LOGS = [
     {"timestamp": "2026-04-30T18:00:00+00:00", "agent": "CoordinatorAgent",
      "tool_called": "file_reader_tool", "input_summary": "scan /code",
-     "output_summary": "Read 2 files", "model": "llama3:8b", "duration_ms": 320},
+     "output_summary": "Read 2 files", "model": OLLAMA_MODEL, "duration_ms": 320},
 ]
 
 

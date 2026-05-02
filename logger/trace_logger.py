@@ -17,7 +17,7 @@ import time
 from datetime import datetime, timezone
 from typing import Optional
 
-from config import LOGS_DIR
+from config import LOGS_DIR, OLLAMA_MODEL
 
 
 class TraceLogger:
@@ -58,7 +58,7 @@ class TraceLogger:
         input_summary: str,
         output_summary: str,
         duration_ms: float,
-        model: str = "llama3:8b",
+        model: str = OLLAMA_MODEL,
     ) -> dict:
         """
         Record one agent invocation trace entry.
